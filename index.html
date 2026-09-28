@@ -1,10 +1,95 @@
-<html>
-  <head>ABC</head>
-      <script>
-      window.location.replace("https://navjotsuman.com");
-    </script>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Me &amp; My Friend</title>
+    <style>
+      body {
+        font-family: Georgia, "Times New Roman", serif;
+        text-align: center;
+        margin: 0;
+        padding: 40px 16px;
+      }
+      img {
+        max-width: 100%;
+        width: 420px;
+        height: auto;
+        border-radius: 12px;
+      }
+      h1 {
+        font-size: 1.6rem;
+        font-weight: normal;
+        margin: 28px 0 12px;
+      }
+      p.shayari {
+        font-size: 1.1rem;
+        line-height: 1.9;
+        max-width: 520px;
+        margin: 0 auto;
+      }
+      p.caption {
+        font-size: 0.95rem;
+        margin-top: 24px;
+      }
+    </style>
+  </head>
   <body>
+    <img src="img.jpeg" alt="Me and my friend" />
 
+    <h1>Me &amp; My Friend</h1>
 
+    <p class="shayari">
+      Dosti woh nahi jo har roz milti hai,<br />
+      dosti woh hai jo dil mein hamesha rehti hai.<br />
+      Raaste alag ho jaayein toh kya hua,<br />
+      yaadon ki yeh tasveer kabhi purani nahi hoti.
+    </p>
+
+    <p class="caption">— ek purani yaad, hamesha ke liye</p>
+
+    <audio id="bgMusic" loop autoplay muted playsinline preload="auto">
+      <source src="ReelAudio-12027.mp3" type="audio/mpeg" />
+    </audio>
+
+    <script>
+      var audio = document.getElementById("bgMusic");
+
+      function start() {
+        var p = audio.play();
+        if (p) {
+          p.catch(function () {});
+        }
+      }
+
+      // Muted autoplay is the only kind browsers allow without a gesture,
+      // so begin silently and unmute at the first hint of interaction.
+      function unmute() {
+        audio.muted = false;
+        audio.volume = 1;
+        start();
+      }
+
+      start();
+
+      ["pointerdown", "pointermove", "keydown", "touchstart", "scroll", "wheel"].forEach(
+        function (evt) {
+          document.addEventListener(evt, unmute, { once: true, passive: true });
+        }
+      );
+
+      // Resume if the tab is backgrounded and returned to.
+      document.addEventListener("visibilitychange", function () {
+        if (!document.hidden) {
+          start();
+        }
+      });
+
+      // Guard against the track ever stalling or ending.
+      audio.addEventListener("ended", start);
+      audio.addEventListener("pause", function () {
+        setTimeout(start, 120);
+      });
+    </script>
   </body>
 </html>
