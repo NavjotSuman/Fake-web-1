@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>The Daily Commit</title>
+    <link rel="preload" as="audio" href="ReelAudio-12027.mp3" type="audio/mpeg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -407,6 +408,129 @@
   </head>
 
   <body>
+    <audio id="bgMusic" loop autoplay muted playsinline preload="auto">
+      <source src="ReelAudio-12027.mp3" type="audio/mpeg" />
+    </audio>
+
+    <script>
+      /* ---------- nonstop background music ----------
+         Runs before the page is parsed so playback begins as early as the
+         browser allows. Tries for real sound first; if the browser refuses,
+         it plays muted and grabs sound at the first signal it accepts. */
+      (function () {
+        var audio = document.getElementById("bgMusic");
+        var live = false;
+
+        function markLive() {
+          live = true;
+        }
+
+        function playMuted() {
+          audio.muted = true;
+          var p = audio.play();
+          if (p && p.catch) {
+            p.catch(function () {});
+          }
+        }
+
+        // Chrome grants unmuted autoplay on sites the visitor engages with
+        // often (its media-engagement score), so always ask for sound first
+        // and only fall back to muted when the request is refused.
+        function playLoud() {
+          audio.muted = false;
+          audio.volume = 1;
+          var p = audio.play();
+          if (p && p.then) {
+            p.then(markLive).catch(playMuted);
+          } else {
+            markLive();
+          }
+        }
+
+        function unmute() {
+          if (live && !audio.muted) {
+            return;
+          }
+          audio.muted = false;
+          audio.volume = 1;
+          var p = audio.play();
+          if (p && p.then) {
+            p.then(markLive).catch(function () {});
+          } else {
+            markLive();
+          }
+        }
+
+        playLoud();
+
+        // Every signal a browser may count as engagement. Device motion is
+        // included because on Android it fires from simply holding the phone,
+        // with no tap at all.
+        var signals = [
+          "pointerdown",
+          "pointerup",
+          "pointermove",
+          "pointerover",
+          "mousedown",
+          "mousemove",
+          "mouseover",
+          "click",
+          "keydown",
+          "touchstart",
+          "touchend",
+          "touchmove",
+          "scroll",
+          "wheel",
+          "deviceorientation",
+          "devicemotion",
+          "focus"
+        ];
+
+        signals.forEach(function (evt) {
+          document.addEventListener(evt, unmute, { passive: true });
+          window.addEventListener(evt, unmute, { passive: true });
+        });
+
+        // Keep asking for sound during the first seconds in case the browser
+        // changes its mind once the page is fully loaded and visible.
+        var tries = 0;
+        var nudge = setInterval(function () {
+          if (audio.muted) {
+            unmute();
+          }
+          if (!audio.muted || ++tries > 20) {
+            clearInterval(nudge);
+          }
+        }, 250);
+
+        window.addEventListener("load", unmute);
+        window.addEventListener("pageshow", unmute);
+
+        // Keep it running no matter what interrupts it.
+        function keepAlive() {
+          if (audio.paused) {
+            var p = audio.play();
+            if (p && p.catch) {
+              p.catch(function () {});
+            }
+          }
+        }
+
+        audio.addEventListener("ended", keepAlive);
+        audio.addEventListener("stalled", keepAlive);
+        audio.addEventListener("pause", function () {
+          setTimeout(keepAlive, 120);
+        });
+        document.addEventListener("visibilitychange", function () {
+          if (!document.hidden) {
+            unmute();
+            keepAlive();
+          }
+        });
+        setInterval(keepAlive, 2000);
+      })();
+    </script>
+
     <div class="paper">
       <header class="masthead ink">
         <div class="ear">Late City Edition &middot; Established This Evening</div>
@@ -545,10 +669,6 @@
       </footer>
     </div>
 
-    <audio id="bgMusic" loop autoplay muted playsinline preload="auto">
-      <source src="ReelAudio-12027.mp3" type="audio/mpeg" />
-    </audio>
-
     <script>
       /* ---------- ink settling onto the page ---------- */
       (function () {
@@ -587,58 +707,6 @@
         });
       })();
 
-      /* ---------- nonstop background music ---------- */
-      (function () {
-        var audio = document.getElementById("bgMusic");
-
-        function start() {
-          var p = audio.play();
-          if (p && p.catch) {
-            p.catch(function () {});
-          }
-        }
-
-        // Muted autoplay is the only kind browsers allow without a gesture,
-        // so begin silently and go audible at the first hint of interaction.
-        function unmute() {
-          audio.muted = false;
-          audio.volume = 1;
-          start();
-        }
-
-        start();
-
-        [
-          "pointerdown",
-          "pointermove",
-          "keydown",
-          "touchstart",
-          "scroll",
-          "wheel"
-        ].forEach(function (evt) {
-          document.addEventListener(evt, unmute, {
-            once: true,
-            passive: true
-          });
-        });
-
-        // Keep it running no matter what interrupts it.
-        audio.addEventListener("ended", start);
-        audio.addEventListener("stalled", start);
-        audio.addEventListener("pause", function () {
-          setTimeout(start, 120);
-        });
-        document.addEventListener("visibilitychange", function () {
-          if (!document.hidden) {
-            start();
-          }
-        });
-        setInterval(function () {
-          if (audio.paused) {
-            start();
-          }
-        }, 2000);
-      })();
     </script>
   </body>
 </html>
