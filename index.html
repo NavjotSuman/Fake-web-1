@@ -3,93 +3,642 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Me &amp; My Friend</title>
+    <title>The Daily Commit</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
+      rel="stylesheet"
+    />
     <style>
+      :root {
+        --paper: #fffdf8;
+        --ink: #14100c;
+        --soft: #4a453d;
+        --rule: #14100c;
+        --faint: #ccc5b7;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
       body {
-        font-family: Georgia, "Times New Roman", serif;
-        text-align: center;
         margin: 0;
-        padding: 40px 16px;
+        padding: 0;
       }
-      img {
-        max-width: 100%;
-        width: 420px;
-        height: auto;
-        border-radius: 12px;
+
+      body {
+        background: var(--paper);
+        color: var(--ink);
+        font-family: "Libre Baskerville", Georgia, "Times New Roman", serif;
+        line-height: 1.7;
+        -webkit-font-smoothing: antialiased;
       }
-      h1 {
-        font-size: 1.6rem;
-        font-weight: normal;
-        margin: 28px 0 12px;
+
+      /* faint newsprint tooth */
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 0;
+        opacity: 0.5;
+        background-image: radial-gradient(
+          rgba(20, 16, 12, 0.045) 1px,
+          transparent 1px
+        );
+        background-size: 4px 4px;
       }
-      p.shayari {
-        font-size: 1.1rem;
-        line-height: 1.9;
-        max-width: 520px;
+
+      .paper {
+        position: relative;
+        z-index: 1;
+        max-width: 1220px;
+        margin: 0 auto;
+        padding: 38px 30px 54px;
+      }
+
+      /* ---------------- masthead ---------------- */
+      .masthead {
+        text-align: center;
+        border-bottom: 3px double var(--rule);
+        padding-bottom: 14px;
+      }
+
+      .masthead .ear {
+        font-size: 0.66rem;
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        color: var(--soft);
+        margin-bottom: 12px;
+      }
+
+      .masthead h1 {
+        font-family: "UnifrakturMaguntia", "Playfair Display", Georgia, serif;
+        font-weight: 400;
+        font-size: clamp(2.6rem, 8.5vw, 5.6rem);
+        line-height: 1;
+        margin: 0;
+        letter-spacing: 0.01em;
+      }
+
+      .masthead .motto {
+        font-style: italic;
+        font-size: 0.86rem;
+        color: var(--soft);
+        margin-top: 12px;
+      }
+
+      /* dateline strip */
+      .dateline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        font-size: 0.68rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        padding: 9px 2px;
+        border-bottom: 1px solid var(--rule);
+        color: var(--soft);
+      }
+
+      /* banner headline */
+      .banner {
+        text-align: center;
+        padding: 26px 0 20px;
+        border-bottom: 1px solid var(--rule);
+      }
+
+      .banner h2 {
+        font-family: "Playfair Display", Georgia, serif;
+        font-weight: 900;
+        font-size: clamp(1.75rem, 4.6vw, 3.1rem);
+        line-height: 1.12;
+        margin: 0 0 10px;
+        letter-spacing: -0.01em;
+      }
+
+      .banner .sub {
+        font-style: italic;
+        color: var(--soft);
+        font-size: clamp(0.9rem, 1.6vw, 1.02rem);
+        max-width: 660px;
         margin: 0 auto;
       }
-      p.caption {
-        font-size: 0.95rem;
-        margin-top: 24px;
+
+      /* ---------------- three columns ---------------- */
+      .sheet {
+        display: grid;
+        grid-template-columns: 1fr 1.12fr 1fr;
+        gap: 0;
+        padding-top: 28px;
+      }
+
+      .col {
+        padding: 0 26px;
+      }
+
+      .col.story + .col.plate,
+      .col.plate + .col.story {
+        border-left: 1px solid var(--faint);
+      }
+
+      .col.story:first-child {
+        padding-left: 0;
+      }
+
+      .col.story:last-child {
+        padding-right: 0;
+      }
+
+      .kicker {
+        font-size: 0.63rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--soft);
+        border-bottom: 1px solid var(--rule);
+        padding-bottom: 7px;
+        margin-bottom: 13px;
+      }
+
+      .col h3 {
+        font-family: "Playfair Display", Georgia, serif;
+        font-weight: 900;
+        font-size: clamp(1.35rem, 2.5vw, 1.95rem);
+        line-height: 1.16;
+        margin: 0 0 8px;
+      }
+
+      .deck {
+        font-style: italic;
+        color: var(--soft);
+        font-size: 0.92rem;
+        line-height: 1.55;
+        margin: 0 0 14px;
+      }
+
+      .byline {
+        font-size: 0.64rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        padding: 7px 0;
+        border-top: 1px solid var(--faint);
+        border-bottom: 1px solid var(--faint);
+        margin-bottom: 16px;
+        color: var(--soft);
+      }
+
+      .body p {
+        margin: 0 0 13px;
+        font-size: 0.9rem;
+        line-height: 1.78;
+        text-align: justify;
+        hyphens: auto;
+        -webkit-hyphens: auto;
+      }
+
+      /* drop cap */
+      .body > p:first-of-type::first-letter {
+        font-family: "Playfair Display", Georgia, serif;
+        font-weight: 900;
+        float: left;
+        font-size: 3.4em;
+        line-height: 0.82;
+        padding: 0.06em 0.09em 0 0;
+        margin-right: 0.02em;
+      }
+
+      /* tools list, set like a newspaper sidebar */
+      .tools {
+        margin-top: 18px;
+        border-top: 3px double var(--rule);
+        padding-top: 11px;
+      }
+
+      .tools .label {
+        font-size: 0.6rem;
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+        color: var(--soft);
+        margin-bottom: 7px;
+      }
+
+      .tools p {
+        margin: 0;
+        font-size: 0.8rem;
+        line-height: 1.85;
+        font-variant: small-caps;
+        letter-spacing: 0.03em;
+      }
+
+      /* ---------------- centre plate ---------------- */
+      .col.plate {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .plate figure {
+        margin: 0;
+        width: 100%;
+      }
+
+      .plate img {
+        display: block;
+        width: 100%;
+        height: auto;
+        border: 1px solid var(--rule);
+        padding: 6px;
+        background: #fff;
+        filter: grayscale(100%) contrast(1.08);
+        transition: filter 1.1s ease;
+      }
+
+      .plate figure:hover img {
+        filter: grayscale(0%) contrast(1);
+      }
+
+      .plate figcaption {
+        font-size: 0.76rem;
+        font-style: italic;
+        color: var(--soft);
+        line-height: 1.6;
+        margin-top: 10px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--faint);
+      }
+
+      .plate .standfirst {
+        font-size: 0.82rem;
+        line-height: 1.8;
+        margin: 14px 0 0;
+        text-align: justify;
+        hyphens: auto;
+      }
+
+      .plate .cut {
+        font-size: 0.6rem;
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+        color: var(--soft);
+        margin-top: 16px;
+        padding-top: 10px;
+        border-top: 3px double var(--rule);
+        width: 100%;
+      }
+
+      /* ---------------- colophon ---------------- */
+      .colophon {
+        margin-top: 34px;
+        border-top: 3px double var(--rule);
+        padding-top: 14px;
+        text-align: center;
+        font-size: 0.72rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--soft);
+      }
+
+      .colophon em {
+        display: block;
+        text-transform: none;
+        letter-spacing: normal;
+        font-size: 0.86rem;
+        margin-top: 9px;
+      }
+
+      /* ---------------- animation ---------------- */
+      .ink {
+        opacity: 0;
+        transform: translateY(14px);
+        transition: opacity 1s ease, transform 1s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .ink.set {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* rules that draw themselves */
+      .draw {
+        position: relative;
+      }
+
+      .draw::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -1px;
+        height: 1px;
+        width: 100%;
+        background: var(--rule);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 1.3s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      .draw.set::after {
+        transform: scaleX(1);
+      }
+
+      /* ---------------- responsive ---------------- */
+      @media (max-width: 880px) {
+        .paper {
+          padding: 26px 18px 40px;
+        }
+
+        .sheet {
+          grid-template-columns: 1fr;
+          padding-top: 20px;
+        }
+
+        .col {
+          padding: 22px 0;
+          border-left: 0 !important;
+          border-top: 1px solid var(--faint);
+        }
+
+        .col.plate {
+          order: -1;
+          border-top: 0;
+          padding-top: 0;
+        }
+
+        .dateline {
+          justify-content: center;
+          text-align: center;
+          font-size: 0.6rem;
+          letter-spacing: 0.16em;
+        }
+
+        .plate img {
+          filter: none;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .ink {
+          opacity: 1;
+          transform: none;
+        }
+        .draw::after {
+          transform: scaleX(1);
+        }
+        * {
+          transition: none !important;
+        }
+      }
+
+      @media print {
+        body::before,
+        audio {
+          display: none;
+        }
+        .plate img {
+          filter: grayscale(100%);
+        }
       }
     </style>
   </head>
+
   <body>
-    <img src="img.jpeg" alt="Me and my friend" />
+    <div class="paper">
+      <header class="masthead ink">
+        <div class="ear">Late City Edition &middot; Established This Evening</div>
+        <h1>The Daily Commit</h1>
+        <div class="motto">
+          &ldquo;All the code that&rsquo;s fit to ship&rdquo;
+        </div>
+      </header>
 
-    <h1>Me &amp; My Friend</h1>
+      <div class="dateline ink">
+        <span>Vol. I &middot; No. 1</span>
+        <span>Monday, September 28, 2026</span>
+        <span>Price: One Cup of Chai</span>
+      </div>
 
-    <p class="shayari">
-      Dosti woh nahi jo har roz milti hai,<br />
-      dosti woh hai jo dil mein hamesha rehti hai.<br />
-      Raaste alag ho jaayein toh kya hua,<br />
-      yaadon ki yeh tasveer kabhi purani nahi hoti.
-    </p>
+      <div class="banner ink">
+        <h2>Two Developers, One Desk, One Deadline</h2>
+        <p class="sub">
+          An evening report from the corner table where an interface takes shape
+          on one screen and the engine behind it comes alive on the other.
+        </p>
+      </div>
 
-    <p class="caption">— ek purani yaad, hamesha ke liye</p>
+      <main class="sheet">
+        <!-- LEFT -->
+        <section class="col story ink">
+          <div class="kicker">On The Front End</div>
+          <h3>The Man Who Sweats The Details</h3>
+          <p class="deck">
+            Where others see a finished page, Hiten Rana sees a hundred
+            decisions that had to go right.
+          </p>
+          <div class="byline">By Our Design Correspondent</div>
+
+          <div class="body">
+            <p>
+              Hiten Rana builds the part of the product people actually touch,
+              and he builds it so quietly well that most never think about it at
+              all. That, he maintains, is the entire point. An interface has
+              done its job when it disappears.
+            </p>
+            <p>
+              His attention runs to the details others skip: how a page settles
+              into place rather than snapping, how a button answers a thumb, how
+              a layout keeps its composure when the screen shrinks to the size of
+              a palm. Every transition is deliberate. Every spacing decision has
+              been argued for at least once.
+            </p>
+            <p>
+              Colleagues report that nothing leaves his desk until it feels
+              right under the hand, a standard that is difficult to measure and
+              impossible to fake. The work is patient, unglamorous, and visible
+              to everyone the moment it is missing.
+            </p>
+          </div>
+
+          <div class="tools">
+            <div class="label">Instruments of the Trade</div>
+            <p>
+              React &middot; JavaScript &middot; Tailwind CSS &middot; Interface
+              Engineering &middot; Responsive Layout &middot; Motion &amp;
+              Animation
+            </p>
+          </div>
+        </section>
+
+        <!-- CENTRE -->
+        <section class="col plate ink">
+          <figure>
+            <img
+              src="photo.jpg"
+              alt="Hiten Rana and Navjot Suman at their desk"
+            />
+            <figcaption>
+              Photographed at the desk, late in the evening &mdash; Hiten Rana,
+              left, and Navjot Suman.
+            </figcaption>
+          </figure>
+
+          <p class="standfirst">
+            They share a table, a deadline, and a stubborn disagreement about
+            what counts as finished. One will not release a screen that feels a
+            frame too slow; the other will not release a system he cannot
+            explain end to end. The argument has improved the work more than
+            either would admit in print.
+          </p>
+
+          <div class="cut">Same Desk &middot; Same Deadline</div>
+        </section>
+
+        <!-- RIGHT -->
+        <section class="col story ink">
+          <div class="kicker">Across The Stack</div>
+          <h3>A Builder Who Keeps The Seams Hidden</h3>
+          <p class="deck">
+            Navjot Suman follows a problem wherever it goes, from the browser
+            down to the schema beneath it.
+          </p>
+          <div class="byline">By Our Engineering Correspondent</div>
+
+          <div class="body">
+            <p>
+              Navjot Suman works across the whole of the stack, and his chief
+              talent is that you cannot tell where one part ends and the next
+              begins. He moves from a component in the browser to the interface
+              serving it and the data model underneath without ever losing the
+              thread of the problem.
+            </p>
+            <p>
+              He thinks in systems rather than in pieces. A change to a table is
+              never only a change to a table; it is a question about everything
+              that reads from it, and he would rather answer that question now
+              than be asked it later by a user.
+            </p>
+            <p>
+              He is at his most useful on the difficult part of the work, the
+              one quietly deciding whether the rest of it holds together. It is
+              the sort of contribution that rarely shows up in a screenshot and
+              is felt immediately when absent.
+            </p>
+          </div>
+
+          <div class="tools">
+            <div class="label">Instruments of the Trade</div>
+            <p>
+              Node.js &middot; React &middot; Databases &middot; API Design
+              &middot; System Architecture &middot; Deployment
+            </p>
+          </div>
+        </section>
+      </main>
+
+      <footer class="colophon ink">
+        Printed Side By Side, One Late Evening At A Time
+        <em>&mdash; The Daily Commit, corner table, second floor</em>
+      </footer>
+    </div>
 
     <audio id="bgMusic" loop autoplay muted playsinline preload="auto">
       <source src="ReelAudio-12027.mp3" type="audio/mpeg" />
     </audio>
 
     <script>
-      var audio = document.getElementById("bgMusic");
+      /* ---------- ink settling onto the page ---------- */
+      (function () {
+        var items = document.querySelectorAll(".ink");
+        var rules = document.querySelectorAll(".draw");
 
-      function start() {
-        var p = audio.play();
-        if (p) {
-          p.catch(function () {});
+        function set(el, delay) {
+          setTimeout(function () {
+            el.classList.add("set");
+          }, delay);
         }
-      }
 
-      // Muted autoplay is the only kind browsers allow without a gesture,
-      // so begin silently and unmute at the first hint of interaction.
-      function unmute() {
-        audio.muted = false;
-        audio.volume = 1;
-        start();
-      }
-
-      start();
-
-      ["pointerdown", "pointermove", "keydown", "touchstart", "scroll", "wheel"].forEach(
-        function (evt) {
-          document.addEventListener(evt, unmute, { once: true, passive: true });
+        if ("IntersectionObserver" in window) {
+          var io = new IntersectionObserver(
+            function (entries) {
+              entries.forEach(function (entry, i) {
+                if (entry.isIntersecting) {
+                  set(entry.target, i * 110);
+                  io.unobserve(entry.target);
+                }
+              });
+            },
+            { threshold: 0.1, rootMargin: "0px 0px -30px 0px" }
+          );
+          items.forEach(function (el) {
+            io.observe(el);
+          });
+        } else {
+          items.forEach(function (el, i) {
+            set(el, i * 110);
+          });
         }
-      );
 
-      // Resume if the tab is backgrounded and returned to.
-      document.addEventListener("visibilitychange", function () {
-        if (!document.hidden) {
+        rules.forEach(function (el, i) {
+          set(el, 400 + i * 140);
+        });
+      })();
+
+      /* ---------- nonstop background music ---------- */
+      (function () {
+        var audio = document.getElementById("bgMusic");
+
+        function start() {
+          var p = audio.play();
+          if (p && p.catch) {
+            p.catch(function () {});
+          }
+        }
+
+        // Muted autoplay is the only kind browsers allow without a gesture,
+        // so begin silently and go audible at the first hint of interaction.
+        function unmute() {
+          audio.muted = false;
+          audio.volume = 1;
           start();
         }
-      });
 
-      // Guard against the track ever stalling or ending.
-      audio.addEventListener("ended", start);
-      audio.addEventListener("pause", function () {
-        setTimeout(start, 120);
-      });
+        start();
+
+        [
+          "pointerdown",
+          "pointermove",
+          "keydown",
+          "touchstart",
+          "scroll",
+          "wheel"
+        ].forEach(function (evt) {
+          document.addEventListener(evt, unmute, {
+            once: true,
+            passive: true
+          });
+        });
+
+        // Keep it running no matter what interrupts it.
+        audio.addEventListener("ended", start);
+        audio.addEventListener("stalled", start);
+        audio.addEventListener("pause", function () {
+          setTimeout(start, 120);
+        });
+        document.addEventListener("visibilitychange", function () {
+          if (!document.hidden) {
+            start();
+          }
+        });
+        setInterval(function () {
+          if (audio.paused) {
+            start();
+          }
+        }, 2000);
+      })();
     </script>
   </body>
 </html>
